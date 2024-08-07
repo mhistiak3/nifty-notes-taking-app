@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./partials/header.ejs") %> 
+<body class="dark-theme">
+    <%- include("./partials/nav.ejs") %> 
+    <div class="container mx-auto py-8">
+
+        <form id="addNoteForm" class="bg-gray-800 p-6 rounded shadow-md">
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-2" for="title">Title</label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" placeholder="Enter note title" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-2" for="description">Description</label>
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" rows="5" placeholder="Enter note description" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" class="form-checkbox" id="completed">
+                    <span class="ml-2">Completed</span>
+                </label>
+            </div>
+            <div class="mb-4">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" class="form-checkbox" id="favorite">
+                    <span class="ml-2">Favorite</span>
+                </label>
+            </div>
+            <button type="submit" class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Add Note
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('addNoteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const completed = document.getElementById('completed').checked;
+            const favorite = document.getElementById('favorite').checked;
+
+            // Here you can send the data to your backend (e.g., using fetch or axios)
+            console.log({ title, description, completed, favorite });
+
+            // Redirect or show a success message after adding the note
+            window.location.href = '/allnotes'; // Redirect back to all notes
+        });
+    </script>
+</body>
+</html>

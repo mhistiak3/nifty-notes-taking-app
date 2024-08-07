@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("./partials/header.ejs") %>
+  <body class="dark-theme">
+    <%- include("./partials/nav.ejs") %>
+    <div class="container mx-auto py-8">
+      <div class="flex justify-center">
+        <button
+          class="btn-purple my-4 py-2 px-4 rounded"
+          onclick="window.location.href='/add-note'"
+        >
+          Add New Note
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="text"
+          id="search"
+          placeholder="Search Notes..."
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notes">
+        <!-- Notes will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchNotes();
+        document
+          .getElementById("search")
+          .addEventListener("input", function () {
+            fetchNotes(this.value);
+          });
+      });
+
+      function fetchNotes(searchTerm = "") {
+        // Dummy data for demonstration
+        const notes = [
+          {
+            title: "Note 1",
+            description: "Description 1",
+            completed: true,
+            favorite: true,
+          },
+          {
+            title: "Note 2",
+            description: "Description 2",
+            completed: false,
+            favorite: false,
+          },
+          {
+            title: "Note 3",
+            description: "Description 3",
+            completed: false,
+            favorite: true,
+          },
+          {
+            title: "Note 4",
+            description: "Description 4",
+            completed: true,
+            favorite: false,
+          },
+          {
+            title: "Note 5",
+            description: "Description 5",
+            completed: false,
+            favorite: true,
+          },
+        ];
+
+        const filteredNotes = notes.filter((note) => {
+          return (
+            note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            note.description.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        });
+
+        const notesContainer = document.getElementById("notes");
+        notesContainer.innerHTML = filteredNotes
+          .map(
+            (note) => `
+                <div class="bg-gray-800 p-4 rounded shadow-md">
+                    <h2 class="text-xl font-bold">${note.title}</h2>
+                    <p>${note.description}</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="flex space-x-2">
+                            <button class="text-purple-600" title="Edit" onclick="window.location.href='/edit-note'">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="text-red-600" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="text-green-600" title="Complete">
+                                <i class="${
+                                  note.completed
+                                    ? "fas fa-check-circle"
+                                    : "far fa-circle"
+                                }"></i>
+                            </button>
+                            <button class="text-yellow-600" title="Favorite">
+                                <i class="${
+                                  note.favorite ? "fas fa-star" : "far fa-star"
+                                }"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+    </script>
+  </body>
+</html>

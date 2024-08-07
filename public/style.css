@@ -1,0 +1,58 @@
+/* Base Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Theme Variables */
+:root {
+    --bg-color: #1e1e1e; /* Background color */
+    --text-color: #ffffff; /* Text color */
+    --primary-color: #6b46c1; /* Primary button color */
+    --primary-hover-color: #553c9a; /* Primary button hover color */
+    --card-bg-color: #2d2d2d; /* Note card background */
+}
+
+/* Dark Theme */
+.dark-theme {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Button Styles */
+.btn-purple {
+    background-color: var(--primary-color);
+    transition: background-color 0.3s ease;
+}
+
+.btn-purple:hover {
+    background-color: var(--primary-hover-color);
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Card Styles */
+.note-card {
+    background-color: var(--card-bg-color);
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+input[type="text"],
+textarea {
+    background-color: #2d2d2d;
+    color: var(--text-color);
+    border: 1px solid #444;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}

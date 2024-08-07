@@ -4,7 +4,7 @@
   "description": "An intuitive app for organizing and managing your notes efficiently.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/mhistiak3/nifty-notes-taking-app/issues"
   },
-  "homepage": "https://github.com/mhistiak3/nifty-notes-taking-app#readme"
+  "homepage": "https://github.com/mhistiak3/nifty-notes-taking-app#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
 }
