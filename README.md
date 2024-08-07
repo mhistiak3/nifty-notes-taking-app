@@ -1,4 +1,4 @@
-# NoteNest
+# Nifty
 
 An intuitive web app for organizing and managing your notes efficiently.
 
