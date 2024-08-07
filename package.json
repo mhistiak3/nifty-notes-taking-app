@@ -1,0 +1,22 @@
+{
+  "name": "nifty",
+  "version": "1.0.0",
+  "description": "An intuitive app for organizing and managing your notes efficiently.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhistiak3/nifty-notes-taking-app.git"
+  },
+  "keywords": [
+    "notes-app"
+  ],
+  "author": "Istiak Ahammad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mhistiak3/nifty-notes-taking-app/issues"
+  },
+  "homepage": "https://github.com/mhistiak3/nifty-notes-taking-app#readme"
+}
