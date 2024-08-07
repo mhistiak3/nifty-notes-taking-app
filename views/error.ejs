@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("./partials/header.ejs") %> 
+<body class="flex items-center justify-center min-h-screen dark-theme">
+    <div class="text-center">
+        <h1 class="text-5xl font-bold mb-4">Something Went Wrong</h1>
+        <p class="text-xl mb-8"><%= error.message %></p>
+        <a href="/" class="text-purple-500 hover:underline">Go back to Home</a>
+    </div>
+</body>
+</html>

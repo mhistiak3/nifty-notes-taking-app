@@ -1,5 +1,6 @@
 // HACK: show register page
 const getRegister = (req, res, next) => {
+  
   res.render("register");
 };
 

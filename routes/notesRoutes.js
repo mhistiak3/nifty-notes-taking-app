@@ -9,6 +9,7 @@
 // dependencies
 const express = require("express");
 const { getNotes, addNotesPage, editNotesPage } = require("../controllers/notesController");
+const decorateHtmlResponse = require("../middleware/common/decorateHtmlResponse");
 
 
 const notesRoutes = express.Router();
@@ -16,11 +17,15 @@ const notesRoutes = express.Router();
 // HACK: Notes router all routes
 
 // Notes page
-notesRoutes.get("/", getNotes);
+notesRoutes.get("/",decorateHtmlResponse("All Notes"), getNotes);
 // add-note page
-notesRoutes.get("/add-note", addNotesPage);
+notesRoutes.get("/add-note", decorateHtmlResponse("Add Note"), addNotesPage);
 // add-note page
-notesRoutes.post("/edit-note", editNotesPage);
+notesRoutes.get(
+  "/edit-note",
+  decorateHtmlResponse("Edit Note"),
+  editNotesPage
+);
 
 
 module.exports = notesRoutes;

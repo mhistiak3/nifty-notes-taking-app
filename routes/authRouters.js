@@ -9,13 +9,14 @@
 // dependencies
 const express = require("express");
 const { getRegister, getLogin } = require("../controllers/authController");
+const decorateHtmlResponse = require("../middleware/common/decorateHtmlResponse");
 
 const authRouter = express.Router();
 
 // Auth router all routes
 // Register page
-authRouter.get("/register",getRegister);
+authRouter.get("/register",decorateHtmlResponse("Registration Page"), getRegister);
 // login page
-authRouter.get("/login",getLogin);
+authRouter.get("/login", decorateHtmlResponse("Login Page"), getLogin);
 
 module.exports = authRouter;

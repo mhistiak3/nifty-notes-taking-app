@@ -9,12 +9,13 @@
 // dependencies
 const express = require("express");
 const getUser = require("../controllers/userController");
+const decorateHtmlResponse = require("../middleware/common/decorateHtmlResponse");
 
 const userRouter = express.Router();
 
 
 // profile page
-userRouter.get("/profile", getUser);
+userRouter.get("/profile", decorateHtmlResponse("User Profile"), getUser);
 
 
 module.exports = userRouter;
