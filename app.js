@@ -9,7 +9,7 @@
 // dependencies
 const express = require("express");
 const path = require("path");
-const { APP_PORT } = require("./config");
+const { APP_PORT, MONGODB_CONNECTION_URL } = require("./config");
 const authRouter = require("./routes/authRouters");
 const notesRoutes = require("./routes/notesRoutes");
 const userRouter = require("./routes/userRouters");
@@ -17,6 +17,13 @@ const {
   errorHandler,
   notFoundHandler,
 } = require("./middleware/common/errorHandler");
+const mongoose = require("mongoose");
+
+// HACK: Database connection
+mongoose
+  .connect(MONGODB_CONNECTION_URL)
+  .then(() => console.log("MongoDB Conection success"))
+  .catch((err) => console.log(err));
 
 // app object
 const app = express();
@@ -24,6 +31,7 @@ const app = express();
 // HACK: Middleware
 // Request Parser
 app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 
 // set view engine
 app.set("view engine", "ejs");
