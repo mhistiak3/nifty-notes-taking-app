@@ -2,7 +2,7 @@
     <!-- Logo Section -->
     <div class="flex items-center">
         <a href="/" class="text-white text-2xl font-bold mr-4">
-            <i class="fas fa-sticky-note"></i> My Notes
+            <i class="fas fa-sticky-note"></i> <%= user.username %> Notes
         </a>
     </div>
 
@@ -25,8 +25,14 @@
         dropdown.classList.toggle('hidden'); // Toggle dropdown visibility
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-        window.location.href = '/logout'; // Redirect to logout
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+       await fetch("auth/logout",{
+            method:"DELETE"
+        })
+        showToast("You are loging out...",1000)
+        setTimeout(()=>{
+            location.replace("auth/login")
+        },1000)
     });
 
     // Close dropdown if clicked outside

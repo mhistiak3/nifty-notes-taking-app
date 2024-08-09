@@ -9,7 +9,7 @@
 // dependencies
 const express = require("express");
 const path = require("path");
-const { APP_PORT, MONGODB_CONNECTION_URL } = require("./config");
+const { APP_PORT, MONGODB_CONNECTION_URL, COOKIE_SECRET } = require("./config");
 const authRouter = require("./routes/authRouters");
 const notesRoutes = require("./routes/notesRoutes");
 const userRouter = require("./routes/userRouters");
@@ -18,6 +18,7 @@ const {
   notFoundHandler,
 } = require("./middleware/common/errorHandler");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 // HACK: Database connection
 mongoose
@@ -37,6 +38,9 @@ app.use(express.urlencoded({extended:true}))
 app.set("view engine", "ejs");
 // set static folder
 app.use(express.static(path.join(__dirname, "public")));
+// parse cookie
+app.use(cookieParser(COOKIE_SECRET));
+
 
 // Application Routes
 app.use("/auth", authRouter);

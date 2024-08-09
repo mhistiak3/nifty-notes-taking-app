@@ -9,17 +9,28 @@
           class="btn-purple my-4 py-2 px-4 rounded"
           onclick="window.location.href='/add-note'"
         >
-          Add New Note
+          <i class="fas fa-plus"></i>
+          New Note
         </button>
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4 flex">
         <input
           type="text"
           id="search"
           placeholder="Search Notes..."
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-4/5  "
         />
+        <select
+          id="filter"
+          class="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline w-1/5 bg-gray-900 "
+         
+        >
+          <option value="all">All Notes</option>
+          <option value="completed">Completed Notes</option>
+          <option value="incomplete">Incomplete Notes</option>
+          <option value="favorite">Favorite Notes</option>
+        </select>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notes">

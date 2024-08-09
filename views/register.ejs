@@ -48,7 +48,7 @@
               required
             />
           </div>
-          <p class="mb-4 text-red-600 font-bold" id="errors"></p>
+          <p class="mb-4 text-red-800 font-semibold" id="errors"></p>
           <div class="flex items-center justify-between">
             <button
               class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -74,7 +74,7 @@
     const errors = document.getElementById("errors");
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      errors.textContent = "";
+      errors.innerHTML = "";
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => {
@@ -90,15 +90,25 @@
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log(result);
 
       if (result.errors) {
-        errors.textContent = "Registration Failed!";
-        console.log(formData);
-
-        console.log(result.errors);
+        let ERROR ="";
+        if (result.errors.username ) {
+          ERROR += result.errors.username.msg + "<br/>";
+        }
+        if (result.errors.email) {
+          ERROR += result.errors.email.msg + "<br/>";
+        }
+        if (result.errors.password) {
+          ERROR += result.errors.password.msg + "<br/>";
+        }
+         if (result.errors.common) {
+          ERROR += result.errors.common.msg + "<br/>";
+        }
+        errors.innerHTML = ERROR
+    
       } else {
-        showToast(`Registration complete! Now you can login.`, 1000); 
+        showToast(`Registration complete! Now you can login.`, 1000);
 
         setTimeout(() => {
           location.href = "login";
