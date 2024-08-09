@@ -19,12 +19,11 @@
           type="text"
           id="search"
           placeholder="Search Notes..."
-          class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-4/5  "
+          class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-4/5"
         />
         <select
           id="filter"
-          class="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline w-1/5 bg-gray-900 "
-         
+          class="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline w-1/5 bg-gray-900"
         >
           <option value="all">All Notes</option>
           <option value="completed">Completed Notes</option>
@@ -33,9 +32,7 @@
         </select>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notes">
-        <!-- Notes will be dynamically inserted here -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="notes"></div>
     </div>
 
     <script>
@@ -48,55 +45,68 @@
           });
       });
 
-      function fetchNotes(searchTerm = "") {
-        // Dummy data for demonstration
-        const notes = [
-          {
-            title: "Note 1",
-            description: "Description 1",
-            completed: true,
-            favorite: true,
-          },
-          {
-            title: "Note 2",
-            description: "Description 2",
-            completed: false,
-            favorite: false,
-          },
-          {
-            title: "Note 3",
-            description: "Description 3",
-            completed: false,
-            favorite: true,
-          },
-          {
-            title: "Note 4",
-            description: "Description 4",
-            completed: true,
-            favorite: false,
-          },
-          {
-            title: "Note 5",
-            description: "Description 5",
-            completed: false,
-            favorite: true,
-          },
-        ];
-
-        const filteredNotes = notes.filter((note) => {
-          return (
-            note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.description.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-        });
-
+      async function fetchNotes(searchTerm = "") {
         const notesContainer = document.getElementById("notes");
-        notesContainer.innerHTML = filteredNotes
-          .map(
-            (note) => `
+        const response = await fetch("/allNotes");
+        const notes = await response.json();
+        const filterByOption = document.getElementById("filter");
+
+        if (notes.length === 0) {
+          notesContainer.innerHTML = `<h2 class="text-2xl p-5">Your Note List is Empty!</h2>`;
+        } else {
+          // search bar
+          let filteredNotes = notes.filter((note) => {
+            return (
+              note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              note.description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+          });
+
+          filterByOption.addEventListener("change", () => {
+            let filterValue = filterByOption.value;
+
+            if (filterValue === "completed") {
+              filteredNotes = notes.filter((note) => {
+                return note.completed;
+              });
+            }
+            if (filterValue === "favorite") {
+              filteredNotes = notes.filter((note) => {
+                return note.favorite;
+              });
+            }
+            if (filterValue === "incomplete") {
+              filteredNotes = notes.filter((note) => {
+                return !note.completed;
+              });
+            }
+            if (filterValue === "all") {
+              filteredNotes = notes.filter((note) => {
+                return true;
+              });
+            }
+            showNotes();
+          });
+
+          showNotes();
+          function escapeQuotes(str) {
+            return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+          }
+          function showNotes() {
+            notesContainer.innerHTML = filteredNotes
+              .map(
+                (note) => `
                 <div class="bg-gray-800 p-4 rounded shadow-md">
                     <h2 class="text-xl font-bold">${note.title}</h2>
-                    <p>${note.description}</p>
+                    <p id="note-description-${note._id}"
+                       data-full-description="${escapeQuotes(note.description)}">
+                       ${
+                         note.description.length > 100
+                           ? note.description.slice(0, 100) +
+                             `... <a class="cursor-pointer font-semibold" onClick="shortDescription('${note._id}')">Read More</a>`
+                           : note.description
+                       }
+                    </p>
                     <div class="flex justify-between items-center mt-4">
                         <div class="flex space-x-2">
                             <button class="text-purple-600" title="Edit" onclick="window.location.href='/edit-note'">
@@ -121,8 +131,33 @@
                     </div>
                 </div>
             `
-          )
-          .join("");
+              )
+              .join("");
+          }
+        }
+      }
+
+      function shortDescription(noteId) {
+        const descriptionElement = document.getElementById(
+          `note-description-${noteId}`
+        );
+        const fullDescription = descriptionElement.getAttribute(
+          "data-full-description"
+        );
+        console.log(fullDescription);
+
+        descriptionElement.innerHTML = `${fullDescription} <a class="cursor-pointer font-semibold"  onClick="shortenDescription('${noteId}')">Show Less</a>`;
+      }
+
+      function shortenDescription(noteId) {
+        const descriptionElement = document.getElementById(
+          `note-description-${noteId}`
+        );
+        const fullDescription = descriptionElement.getAttribute(
+          "data-full-description"
+        );
+        const shortDescription = fullDescription.slice(0, 100);
+        descriptionElement.innerHTML = `${shortDescription}... <a class="cursor-pointer font-semibold" onClick="shortDescription('${noteId}')">Read More</a>`;
       }
     </script>
   </body>

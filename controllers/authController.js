@@ -46,7 +46,11 @@ const loginController = async (req, res, next) => {
         user.password
       );
       if (isValidPassword) {
-        const userObj = { username: user.username, email: user.email };
+        const userObj = {
+          username: user.username,
+          email: user.email,
+          id: user._id,
+        };
         const token = jwt.sign(userObj, JWT_SECRET, { expiresIn: JWT_EXP });
         res.cookie(COOKIE_NAME, token, {
           maxAge: JWT_EXP,
