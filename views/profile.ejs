@@ -1,43 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include("./partials/header.ejs") %> 
-<body class="dark-theme">
-    <%- include("./partials/nav.ejs") %> 
+  <%- include("./partials/header.ejs") %>
+  <body class="dark-theme">
+    <%- include("./partials/nav.ejs") %>
     <div class="container mx-auto py-8">
-        <div class="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-3xl font-bold mb-6 text-center">Profile</h2>
-            <form>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2" for="full-name">Full Name</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="full-name" type="text" placeholder="Full Name" required>
+      <div
+        class="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
+        <h2 class="text-3xl font-bold mb-6 text-center">Profile</h2>
+        <form id="form" enctype="multipart/form-data">
+          <div class="mb-4">
+            <label class="block text-sm font-bold mb-2" for="full-name"
+              >Full Name</label
+            >
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              name="fullname"
+              id="full-name"
+              type="text"
+              value="<%= user.fullname %>"
+              placeholder="Full Name"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-bold mb-2" for="username"
+              >Username</label
+            >
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="username"
+              type="text"
+              placeholder="Username"
+              value="<%= user.username %>"
+              disabled
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-bold mb-2" for="email"
+              >Email</label
+            >
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              placeholder="Email"
+              value="<%= user.email %>"
+              disabled
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-bold mb-2" for="profile-picture"
+              >Profile Picture</label
+            >
+            <div class="flex flex-col items-center">
+              <!-- Image/Icon Preview -->
+              <div id="image-preview" class="mb-4 relative group w-24 h-24">
+                <% if (user.avatar) { %>
+                <img
+                  id="profile-image"
+                  src="uploads/<%= user.avatar %>"
+                  alt="Profile Image"
+                  class="w-24 h-24 rounded-full shadow-md cursor-pointer transition-opacity duration-300"
+                />
+                <% } else { %>
+                <div
+                  class="w-24 h-24 rounded-full shadow-md bg-gray-700 flex items-center justify-center cursor-pointer"
+                >
+                  <i class="fas fa-user text-white text-3xl"></i>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2" for="username">Username</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username" value="User123" disabled>
+                <% } %>
+                <!-- Camera Icon on Hover -->
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <i class="fas fa-camera text-white text-2xl"></i>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2" for="email">Email</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Email" value="user@example.com" disabled>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2" for="profile-picture">Profile Picture</label>
-                    <div class="flex items-center">
-                        <input type="file" id="profile-picture" class="hidden">
-                        <label for="profile-picture" class="btn-purple text-white font-bold py-2 px-4 rounded cursor-pointer">
-                            <i class="fas fa-upload"></i> Upload Image
-                        </label>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <button class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                        Save Changes
-                    </button>
-                    <button class="bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                        Delete Account
-                    </button>
-                </div>
-            </form>
-        </div>
+                <!-- File Input (Hidden) -->
+                <input
+                  type="file"
+                  id="profile-picture"
+                  class="hidden"
+                  name="avatar"
+                  />
+                  <!-- onchange="previewImage(event)" -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <button
+              class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Save Changes
+            </button>
+            <button
+              class="bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
+            >
+              Delete Account
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+
+    <script>
+      // JavaScript function to trigger file input on image click
+      document
+        .getElementById("image-preview")
+        .addEventListener("click", function () {
+          document.getElementById("profile-picture").click();
+        });
+
+      // JavaScript function to preview image before uploading
+      function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          var output = document.getElementById("profile-image");
+          if (!output) {
+            // Create an img element if it doesn't exist (when the icon is initially shown)
+            output = document.createElement("img");
+            output.id = "profile-image";
+            output.className =
+              "w-24 h-24 rounded-full shadow-md cursor-pointer transition-opacity duration-300";
+            document.getElementById("image-preview").innerHTML = ""; // Clear the icon
+            document.getElementById("image-preview").appendChild(output);
+          }
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }
+
+      //   update profile
+      const form = document.getElementById("form");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch("/profile", {
+          method: "PUT",
+          body: formData,
+        });
+        const result = await response.json();
+
+        if (result.errors) {
+          showToast(result.errors.message, 1000);
+        } else {
+          showToast("Your Profile Update Successfully", 1000);
+          setTimeout(() => {
+            location.href = "/profile";
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
 </html>

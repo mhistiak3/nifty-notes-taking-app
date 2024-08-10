@@ -28,7 +28,8 @@ mongoose
 
 // app object
 const app = express();
-
+// global variable
+global.appRoote = path.resolve(__dirname);
 // HACK: Middleware
 // Request Parser
 app.use(express.json());

@@ -8,18 +8,22 @@
 
 // dependencies
 const express = require("express");
-const getUser = require("../controllers/userController");
+const { getUser, editUser } = require("../controllers/userController");
 const decorateHtmlResponse = require("../middleware/common/decorateHtmlResponse");
 const { checkLogin } = require("../middleware/common/checkLogin");
+const avatarUpload = require("../middleware/avatarUpload");
 
 const userRouter = express.Router();
 
-// profile page
+// HACK: profile page
 userRouter.get(
   "/profile",
   decorateHtmlResponse("User Profile"),
   checkLogin,
   getUser
 );
+
+// HACK: Edit Profile Page
+userRouter.put("/profile", checkLogin, avatarUpload, editUser);
 
 module.exports = userRouter;
