@@ -1,45 +1,70 @@
 <nav class="bg-gray-900 p-5 px-10 flex items-center justify-between shadow-md">
-    <!-- Logo Section -->
-    <div class="flex items-center">
-        <a href="/" class="text-white text-2xl font-bold mr-4">
-            <i class="fas fa-sticky-note"></i> <%= user.username %> Notes
-        </a>
-    </div>
+  <!-- Logo Section -->
+  <div class="flex items-center">
+    <a href="/" class="text-white text-2xl font-bold mr-4">
+      <i class="fas fa-sticky-note"></i> <%= user.username %> Notes
+    </a>
+  </div>
 
+  <!-- Dropdown Section -->
+  <div class="relative">
+    <button
+  id="profileBtn"
+  class="flex items-center text-white focus:outline-none"
+>
+  <% if(user.avatar){ %>
+    <img src="../uploads/<%= user.avatar %>" alt="User Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-gray-200"/>
+  <% } else { %>
+    <i class="fas fa-user-circle text-3xl"></i>
+  <% } %>
+  <i class="fas fa-chevron-down ml-2 text-sm"></i>
+</button>
 
-    <!-- Dropdown Section -->
-    <div class="relative">
-        <button id="profileBtn" class="flex items-center text-white focus:outline-none">
-            <i class="fas fa-user-circle text-xl"></i>
-        </button>
-        <div id="profileDropdown" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded shadow-lg hidden">
-            <a href="/profile" class="block px-4 py-2 text-white hover:bg-gray-700">Profile</a>
-            <button id="logoutBtn" class="block w-full text-left px-4 py-2 text-white hover:bg-gray-700">Logout</button>
-        </div>
+    <div
+      id="profileDropdown"
+      class="absolute right-0 mt-2 w-48 bg-gray-800 rounded shadow-lg hidden"
+    >
+      <a href="/profile" class="block px-4 py-2 text-white hover:bg-gray-700"
+        >Profile</a
+      >
+      <button
+        id="logoutBtn"
+        class="block w-full text-left px-4 py-2 text-white hover:bg-gray-700"
+      >
+        Logout
+      </button>
     </div>
+  </div>
 </nav>
 <script>
-    document.getElementById('profileBtn').addEventListener('click', function(event) {
-        event.stopPropagation(); // Prevent event from bubbling up to the window
-        const dropdown = document.getElementById('profileDropdown');
-        dropdown.classList.toggle('hidden'); // Toggle dropdown visibility
+  document
+    .getElementById("profileBtn")
+    .addEventListener("click", function (event) {
+      event.stopPropagation(); // Prevent event from bubbling up to the window
+      const dropdown = document.getElementById("profileDropdown");
+      dropdown.classList.toggle("hidden"); // Toggle dropdown visibility
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', async function() {
-       await fetch("auth/logout",{
-            method:"DELETE"
-        })
-        showToast("You are loging out...",1000)
-        setTimeout(()=>{
-            location.replace("auth/login")
-        },1000)
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", async function () {
+      await fetch("auth/logout", {
+        method: "DELETE",
+      });
+      showToast("You are loging out...", 1000);
+      setTimeout(() => {
+        location.replace("auth/login");
+      }, 1000);
     });
 
-    // Close dropdown if clicked outside
-    window.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('profileDropdown');
-        if (!event.target.closest('#profileBtn') && !event.target.closest('#profileDropdown')) {
-            dropdown.classList.add('hidden'); // Hide dropdown if clicked outside
-        }
-    });
+  // Close dropdown if clicked outside
+  window.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("profileDropdown");
+    if (
+      !event.target.closest("#profileBtn") &&
+      !event.target.closest("#profileDropdown")
+    ) {
+      dropdown.classList.add("hidden"); // Hide dropdown if clicked outside
+    }
+  });
 </script>

@@ -2,15 +2,8 @@ const fs = require("fs");
 const User = require("../model/userSchema");
 
 // HACK: show profile page
-const getUser = async (req, res, next) => {
-  try {
-    const user = await User.findOne({ _id: req.user.id });
-    res.render("profile", {
-      user,
-    });
-  } catch (error) {
-    next(error);
-  }
+const getUser = (req, res, next) => {
+  res.render("profile");
 };
 
 // HACK: show profile page

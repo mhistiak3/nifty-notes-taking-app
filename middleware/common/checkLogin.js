@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { COOKIE_NAME, JWT_SECRET } = require("../../config");
+const User = require("../../model/userSchema");
 
-const checkLogin = (req, res, next) => {
+const checkLogin = async (req, res, next) => {
   const cookie =
     Object.keys(req.signedCookies).length > 0 ? req.signedCookies : null;
   if (cookie) {
@@ -9,11 +10,18 @@ const checkLogin = (req, res, next) => {
       const token = cookie[COOKIE_NAME];
       const user = jwt.verify(token, JWT_SECRET);
       if (user && user.username) {
-        req.user = user;
-        if (res.locals.html) {
-          res.locals.user = user;
+        try {
+          const newUser = await User.findOne({ _id: user.id }).select(
+            "-password"
+          );
+          req.user = newUser;
+          if (res.locals.html) {
+            res.locals.user = newUser;
+          }
+          next();
+        } catch (error) {
+          next(error.message);
         }
-        next();
       } else {
         if (res.locals.html) {
           res.redirect("/");
