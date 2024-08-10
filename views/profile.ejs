@@ -81,8 +81,8 @@
                   id="profile-picture"
                   class="hidden"
                   name="avatar"
-                  />
-                  <!-- onchange="previewImage(event)" -->
+                />
+                <!-- onchange="previewImage(event)" -->
               </div>
             </div>
           </div>
@@ -96,6 +96,7 @@
             <button
               class="bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
+              onclick="deleteAccount('<%= user._id%>')"
             >
               Delete Account
             </button>
@@ -131,7 +132,7 @@
         reader.readAsDataURL(event.target.files[0]);
       }
 
-      //   update profile
+      // HACK: Update profile and Upload Profile Image
       const form = document.getElementById("form");
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -151,6 +152,21 @@
           }, 1000);
         }
       });
+      //  <!-- HACK: Delete Account -->
+      async function deleteAccount(id) {
+        const response = await fetch(`/profile/${id}`, {
+          method: "DELETE",
+        });
+        const result = await response.json();
+        if (result.errors) {
+          showToast(result.errors.message, 1000);
+        } else {
+          showToast("Account Delete Successfully", 1000);
+          setTimeout(() => {
+            location.href = "/auth/register";
+          }, 1000);
+        }
+      }
     </script>
   </body>
 </html>

@@ -9,22 +9,43 @@ const checkLogin = async (req, res, next) => {
     try {
       const token = cookie[COOKIE_NAME];
       const user = jwt.verify(token, JWT_SECRET);
+     
+      
       if (user && user.username) {
         try {
           const newUser = await User.findOne({ _id: user.id }).select(
             "-password"
           );
-          req.user = newUser;
-          if (res.locals.html) {
-            res.locals.user = newUser;
+          if (newUser && newUser._id) {
+            req.user = user;
+            if (res.locals.html) {
+              res.locals.user = newUser;
+            }
+            next();
           }
-          next();
+          else{
+            res.clearCookie(COOKIE_NAME);
+            if (res.locals.html) {
+              res.redirect("auth/login");
+            } else {
+              res.status(401).json({
+                errors: "Athentication failed!",
+              });
+            }
+          }
+          
         } catch (error) {
-          next(error.message);
+         if (res.locals.html) {
+           res.redirect("auth/login");
+         } else {
+           res.status(401).json({
+             errors: "Athentication failed!",
+           });
+         }
         }
       } else {
         if (res.locals.html) {
-          res.redirect("/");
+          res.redirect("auth/login");
         } else {
           res.status(500).json({
             errors: {
@@ -37,7 +58,7 @@ const checkLogin = async (req, res, next) => {
       }
     } catch (error) {
       if (res.locals.html) {
-        res.redirect("/");
+        res.redirect("auth/login");
       } else {
         res.status(500).json({
           errors: {
