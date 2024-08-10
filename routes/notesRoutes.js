@@ -14,6 +14,8 @@ const {
   addNotesPage,
   editNotesPage,
   addNoteController,
+  editNotesController,
+  deleteNoteController,
 } = require("../controllers/notesController");
 const decorateHtmlResponse = require("../middleware/common/decorateHtmlResponse");
 const { checkLogin } = require("../middleware/common/checkLogin");
@@ -29,6 +31,7 @@ notesRoutes.get(
   checkLogin,
   getNotesPage
 );
+// HACK: Show Notes 
 notesRoutes.get("/allNotes", checkLogin, getNotes);
 // add-note page
 notesRoutes.get(
@@ -39,12 +42,17 @@ notesRoutes.get(
 );
 // HACK: Add new note
 notesRoutes.post("/add-note", checkLogin, addNoteController);
-// add-note page
+
+// edit-note page
 notesRoutes.get(
-  "/edit-note",
+  "/edit-note/:id",
   decorateHtmlResponse("Edit Note"),
   checkLogin,
   editNotesPage
 );
+// HACK: Edit Note
+notesRoutes.put("/edit-note/:id", checkLogin, editNotesController);
+// HACK: Delete Note
+notesRoutes.delete("/delete-note/:id", checkLogin, deleteNoteController);
 
 module.exports = notesRoutes;

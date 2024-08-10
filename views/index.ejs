@@ -55,12 +55,16 @@
           notesContainer.innerHTML = `<h2 class="text-2xl p-5">Your Note List is Empty!</h2>`;
         } else {
           // search bar
-          let filteredNotes = notes.filter((note) => {
-            return (
-              note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              note.description.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-          });
+          let filteredNotes = notes
+            .filter((note) => {
+              return (
+                note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                note.description
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              );
+            })
+            .reverse();
 
           filterByOption.addEventListener("change", () => {
             let filterValue = filterByOption.value;
@@ -96,40 +100,56 @@
             notesContainer.innerHTML = filteredNotes
               .map(
                 (note) => `
-                <div class="bg-gray-800 p-4 rounded shadow-md">
-                    <h2 class="text-xl font-bold">${note.title}</h2>
-                    <p id="note-description-${note._id}"
-                       data-full-description="${escapeQuotes(note.description)}">
-                       ${
-                         note.description.length > 100
-                           ? note.description.slice(0, 100) +
-                             `... <a class="cursor-pointer font-semibold" onClick="shortDescription('${note._id}')">Read More</a>`
-                           : note.description
-                       }
-                    </p>
-                    <div class="flex justify-between items-center mt-4">
-                        <div class="flex space-x-2">
-                            <button class="text-purple-600" title="Edit" onclick="window.location.href='/edit-note'">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                            <button class="text-red-600" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="text-green-600" title="Complete">
-                                <i class="${
-                                  note.completed
-                                    ? "fas fa-check-circle"
-                                    : "far fa-circle"
-                                }"></i>
-                            </button>
-                            <button class="text-yellow-600" title="Favorite">
-                                <i class="${
-                                  note.favorite ? "fas fa-star" : "far fa-star"
-                                }"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+               <div class="bg-gray-900 p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+  <h2 class="text-xl font-extrabold text-white mb-2">
+    ${note.title}
+  </h2>
+  <p
+    id="note-description-${note._id}"
+    data-full-description="${escapeQuotes(note.description)}"
+    class="text-gray-300 leading-relaxed"
+  >
+    ${
+      note.description.length > 100
+        ? note.description.slice(0, 100) +
+          `... <a class="cursor-pointer text-blue-400 hover:text-blue-600 font-semibold" onClick="shortDescription('${note._id}')">Read More</a>`
+        : note.description
+    }
+  </p>
+  <div class="flex justify-between items-center mt-6">
+    <div class="flex space-x-4">
+      <button
+        class="text-purple-500 hover:text-purple-700 transition-colors"
+        title="Edit"
+        onclick="window.location.href='/edit-note/${note._id}'"
+      >
+        <i class="fas fa-pencil-alt text-lg"></i>
+      </button>
+      <button
+        class="text-red-500 hover:text-red-700 transition-colors"
+        title="Delete"
+        onClick="deleteNote('${note._id}')"
+      >
+        <i class="fas fa-trash text-lg"></i>
+      </button>
+      <button
+        class="text-green-500 hover:text-green-700 transition-colors"
+        title="Complete"
+      >
+        <i class="${
+          note.completed ? "fas fa-check-circle" : "far fa-circle"
+        } text-lg"></i>
+      </button>
+      <button
+        class="text-yellow-500 hover:text-yellow-700 transition-colors"
+        title="Favorite"
+      >
+        <i class="${note.favorite ? "fas fa-star" : "far fa-star"} text-lg"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
             `
               )
               .join("");
@@ -144,7 +164,6 @@
         const fullDescription = descriptionElement.getAttribute(
           "data-full-description"
         );
-        console.log(fullDescription);
 
         descriptionElement.innerHTML = `${fullDescription} <a class="cursor-pointer font-semibold"  onClick="shortenDescription('${noteId}')">Show Less</a>`;
       }
@@ -158,6 +177,23 @@
         );
         const shortDescription = fullDescription.slice(0, 100);
         descriptionElement.innerHTML = `${shortDescription}... <a class="cursor-pointer font-semibold" onClick="shortDescription('${noteId}')">Read More</a>`;
+      }
+
+      // HACK: Delete Note
+      async function deleteNote(id) {
+        const response = await fetch(`/delete-note/${id}`, {
+          method: "DELETE",
+        });
+        const result = await response.json();
+
+        if (result.errors) {
+          showToast(result.errors.message, 1000);
+        } else {
+          showToast("Your Note Delete Successfully!", 1000);
+          setTimeout(() => {
+            location.href = "/";
+          }, 1000);
+        }
       }
     </script>
   </body>

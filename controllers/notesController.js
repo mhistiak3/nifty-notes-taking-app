@@ -45,14 +45,55 @@ const addNoteController = async (req, res, next) => {
   }
 };
 
-const editNotesPage = (req, res, next) => {
-  res.render("edit-note");
+// HACK: Edit Note Page
+const editNotesPage = async (req, res, next) => {
+  try {
+    const note = await Note.findOne({ _id: req.params.id });
+
+    res.render("edit-note", {
+      data: note,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// HACK: Edit New Note
+const editNotesController = async (req, res, next) => {
+  try {
+    await Note.updateOne({ _id: req.params.id }, req.body);
+    res.json({ message: "Update Success" });
+  } catch (error) {
+    res.status(500).json({
+      errors: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+// HACK: Delete Note
+const deleteNoteController = async (req, res, next) => {
+  try {
+    
+    await Note.deleteOne({ _id: req.params.id.trim() });
+        res.json({ message: "Delete Success" });
+  } catch (error) {
+    
+    res.status(500).json({
+      errors: {
+        message: error.message,
+      },
+    });
+  }
 };
 
 module.exports = {
   getNotesPage,
   getNotes,
   addNotesPage,
-  editNotesPage,
   addNoteController,
+  editNotesPage,
+  editNotesController,
+  deleteNoteController,
 };

@@ -1,67 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include("./partials/header.ejs") %> 
+  <%- include("./partials/header.ejs") %>
 
-<body class="dark-theme">
-    <%- include("./partials/nav.ejs") %> 
+  <body class="dark-theme">
+    <%- include("./partials/nav.ejs") %>
 
     <div class="container mx-auto py-8">
-     
+      <form id="editNoteForm" class="bg-gray-800 p-6 rounded shadow-md">
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2" for="title">Title</label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="title"
+            type="text"
+            placeholder="Enter note title"
+            required
+            value="<%= data.title%>"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2" for="description"
+            >Description</label
+          >
+          <textarea
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+            id="description"
+            rows="5"
+            placeholder="Enter note description"
+            required
+          >
+          <%= data.description %>
+              </textarea
+          >
+        </div>
+        <div class="mb-4">
+          <label class="inline-flex items-center">
+            <input type="checkbox" class="form-checkbox" id="completed" <%=
+            data.completed?"checked":"" %> />
 
-        <form id="editNoteForm" class="bg-gray-800 p-6 rounded shadow-md">
-            <div class="mb-4">
-                <label class="block text-sm font-bold mb-2" for="title">Title</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" placeholder="Enter note title" required>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-bold mb-2" for="description">Description</label>
-                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" rows="5" placeholder="Enter note description" required></textarea>
-            </div>
-            <div class="mb-4">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" class="form-checkbox" id="completed">
-                    <span class="ml-2">Completed</span>
-                </label>
-            </div>
-            <div class="mb-4">
-                <label class="inline-flex items-center">
-                    <input type="checkbox" class="form-checkbox" id="favorite">
-                    <span class="ml-2">Favorite</span>
-                </label>
-            </div>
-            <div class="flex justify-between">
-                <button type="submit" class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Save Changes
-                </button>
-                <button type="button" class="text-red-500 font-bold py-2 px-4 rounded hover:underline" onclick="confirmDelete()">
-                    Delete Note
-                </button>
-            </div>
-        </form>
+            <span class="ml-2">Completed</span>
+          </label>
+        </div>
+
+        <div class="mb-4">
+          <label class="inline-flex items-center">
+            <input type="checkbox" class="form-checkbox" id="favorite" <%=
+            data.favorite?"checked":"" %> />
+            <span class="ml-2">Favorite</span>
+          </label>
+        </div>
+        <div class="flex justify-between">
+          <button
+            type="submit"
+            class="btn-purple text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            class="text-red-500 font-bold py-2 px-4 rounded hover:underline"
+            onclick="confirmDelete(' <%= data._id %>')"
+          >
+            Delete Note
+          </button>
+        </div>
+      </form>
     </div>
 
     <script>
-        document.getElementById('editNoteForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const completed = document.getElementById('completed').checked;
-            const favorite = document.getElementById('favorite').checked;
+      document
+        .getElementById("editNoteForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          let id = location.pathname.split("/").pop();
+          const title = document.getElementById("title").value;
+          const description = document.getElementById("description").value;
+          const completed = document.getElementById("completed").checked;
+          const favorite = document.getElementById("favorite").checked;
 
-            // Here you can send the updated data to your backend (e.g., using fetch or axios)
-            console.log({ title, description, completed, favorite });
+          const note = { title, description, completed, favorite };
 
-            // Redirect or show a success message after saving changes
-            window.location.href = '/allnotes'; // Redirect back to all notes
+          const response = await fetch(`/edit-note/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(note),
+          });
+          const result = await response.json();
+          if (result.errors) {
+            showToast(result.errors.message, 1000);
+          } else {
+            showToast("Your Note Edit Successfully!", 1000);
+            setTimeout(() => {
+              location.href = "/";
+            }, 1000);
+          }
         });
 
-        function confirmDelete() {
-            if (confirm('Are you sure you want to delete this note?')) {
-                // Here you can send a request to delete the note from the backend
-                console.log('Note deleted');
-                window.location.href = '/allnotes'; // Redirect back to all notes
-            }
+      async function confirmDelete(id) {
+        const response = await fetch(`/delete-note/${id}`, {
+          method: "DELETE",
+        });
+        const result = await response.json();
+console.log(result);
+
+        if (result.errors) {
+          showToast(result.errors.message, 1000);
+        } else {
+          showToast("Your Note Delete Successfully!", 1000);
+          setTimeout(() => {
+            location.href = "/";
+          }, 1000);
         }
+      }
     </script>
-</body>
+  </body>
 </html>
