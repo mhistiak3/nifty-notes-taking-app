@@ -63,17 +63,11 @@ const deleteUserHandler = async (req, res, next) => {
             console.log(err);
           }
         });
-        res.clearCookie(COOKIE_NAME);
-        res.json({
-          message: "Delete Account success",
-        });
-      } else {
-        res.status(500).json({
-          errors: {
-            message: "Problem to remove account!",
-          },
-        });
       }
+      res.clearCookie(COOKIE_NAME);
+      res.json({
+        message: "Delete Account success",
+      });
     } else {
       res.status(500).json({
         errors: {
